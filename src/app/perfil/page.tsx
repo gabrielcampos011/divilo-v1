@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { Navbar } from "@/components/ui/navbar";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { AchievementsSection } from "@/components/ui/achievements-section";
 
 export default async function ProfilePage() {
     const supabase = await createClient();
@@ -57,6 +58,9 @@ export default async function ProfilePage() {
                     {/* Main Content */}
                     <div className="col-span-1 md:col-span-2 space-y-8">
 
+                        {/* Conquistas */}
+                        <AchievementsSection user={user} createdGroupsCount={gruposLiderados?.length || 0} />
+
                         {/* Grupos que Participo */}
                         <section>
                             <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -82,7 +86,7 @@ export default async function ProfilePage() {
                                                     </p>
                                                     <p className="text-xs text-gray-500">
                                                         Status: <span className={`font-medium ${p.status === 'pago' ? 'text-green-600' :
-                                                                p.status === 'aprovado' ? 'text-yellow-600' : 'text-gray-500'
+                                                            p.status === 'aprovado' ? 'text-yellow-600' : 'text-gray-500'
                                                             }`}>{p.status}</span>
                                                     </p>
                                                 </div>

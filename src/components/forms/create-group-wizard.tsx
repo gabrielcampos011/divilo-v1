@@ -1,60 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import { createGroup } from "@/app/actions/create-group";
+import { Service, ServiceBrandSelector } from "./service-brand-selector";
+import { PlanSelector } from "./plan-selector";
+import { GroupConfigForm } from "./group-config-form";
 
-type Servico = {
-    id: string;
-    nome: string;
-    categoria: string;
-};
-
-export function CreateGroupWizard({ servicos }: { servicos: Servico[] }) {
+export function CreateGroupWizard({ servicos }: { servicos: Service[] }) {
     const [step, setStep] = useState(1);
-    const [formData, setFormData] = useState({
-        servico_id: "",
-        titulo: "",
-        vagas_totais: "5",
-        valor_cota: "",
-        pix_key: "",
-        login_acesso: "",
-        senha_acesso: "",
-    });
-    const [loading, setLoading] = useState(false);
+    const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
+    const [selectedPlan, setSelectedPlan] = useState<Service | null>(null);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+    const handleSelectBrand = (brand: string) => {
+        setSelectedBrand(brand);
+        setStep(2);
     };
 
-    const handleNext = () => {
-        if (step < 3) setStep(step + 1);
+    const handleSelectPlan = (plan: Service) => {
+        setSelectedPlan(plan);
+        setStep(3);
     };
 
-    const handleBack = () => {
-        if (step > 1) setStep(step - 1);
+    const handleBackToBrand = () => {
+        setStep(1);
+        setSelectedBrand(null);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-
-        // Create FormData object to match Server Action signature
-        const data = new FormData();
-        Object.entries(formData).forEach(([key, value]) => {
-            data.append(key, value);
-        });
-
-        try {
-            await createGroup(data);
-        } catch (error) {
-            console.error(error);
-            alert("Erro ao criar grupo. Tente novamente.");
-            setLoading(false);
-        }
+    const handleBackToPlan = () => {
+        setStep(2);
+        setSelectedPlan(null);
     };
-
-    const selectedService = servicos.find(s => s.id === formData.servico_id);
 
     return (
         <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-[0_2px_8px_rgba(0,0,0,0.06)] border-none overflow-hidden">
@@ -62,203 +36,44 @@ export function CreateGroupWizard({ servicos }: { servicos: Servico[] }) {
             <div className="bg-gray-50 dark:bg-gray-800 px-8 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                     <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step >= 1 ? 'bg-rose-500 text-white' : 'bg-gray-200 text-gray-500'}`}>1</span>
-                    <span className="text-sm font-medium hidden sm:block">Serviço</span>
+                    <span className="text-sm font-medium hidden sm:block text-gray-900 dark:text-gray-100">Serviço</span>
                 </div>
                 <div className={`h-1 flex-1 mx-4 rounded-full ${step >= 2 ? 'bg-rose-500' : 'bg-gray-200'}`}></div>
                 <div className="flex items-center gap-2">
                     <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step >= 2 ? 'bg-rose-500 text-white' : 'bg-gray-200 text-gray-500'}`}>2</span>
-                    <span className="text-sm font-medium hidden sm:block">Detalhes</span>
+                    <span className="text-sm font-medium hidden sm:block text-gray-900 dark:text-gray-100">Plano</span>
                 </div>
                 <div className={`h-1 flex-1 mx-4 rounded-full ${step >= 3 ? 'bg-rose-500' : 'bg-gray-200'}`}></div>
                 <div className="flex items-center gap-2">
                     <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step >= 3 ? 'bg-rose-500 text-white' : 'bg-gray-200 text-gray-500'}`}>3</span>
-                    <span className="text-sm font-medium hidden sm:block">Acesso</span>
+                    <span className="text-sm font-medium hidden sm:block text-gray-900 dark:text-gray-100">Configuração</span>
                 </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-8">
-                {/* Step 1: Service Selection */}
+            <div className="p-8">
                 {step === 1 && (
-                    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-50">Qual serviço você vai compartilhar?</h2>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {servicos.map((servico) => (
-                                <label
-                                    key={servico.id}
-                                    className={`relative flex items-center p-4 cursor-pointer rounded-2xl border-2 transition-all ${formData.servico_id === servico.id
-                                        ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/30'
-                                        : 'border-gray-100 dark:border-gray-700 hover:border-rose-200 dark:hover:border-rose-800'
-                                        }`}
-                                >
-                                    <input
-                                        type="radio"
-                                        name="servico_id"
-                                        value={servico.id}
-                                        checked={formData.servico_id === servico.id}
-                                        onChange={handleChange}
-                                        className="sr-only"
-                                    />
-                                    <span className="flex-1 font-medium text-gray-900 dark:text-gray-100">{servico.nome}</span>
-                                    {formData.servico_id === servico.id && (
-                                        <span className="text-rose-500">✓</span>
-                                    )}
-                                </label>
-                            ))}
-                        </div>
-
-                        <div className="pt-4 flex justify-end">
-                            <button
-                                type="button"
-                                onClick={handleNext}
-                                disabled={!formData.servico_id}
-                                className="bg-rose-500 hover:bg-rose-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-3 px-8 rounded-full transition-all shadow-rose-glow hover:shadow-rose-glow-lg hover:-translate-y-0.5"
-                            >
-                                Continuar
-                            </button>
-                        </div>
-                    </div>
+                    <ServiceBrandSelector
+                        services={servicos}
+                        onSelectBrand={handleSelectBrand}
+                    />
                 )}
 
-                {/* Step 2: Public Details */}
-                {step === 2 && (
-                    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-50">Detalhes do Grupo</h2>
-
-                        <div>
-                            <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Título do Grupo</label>
-                            <input
-                                type="text"
-                                name="titulo"
-                                value={formData.titulo}
-                                onChange={handleChange}
-                                placeholder={`Ex: ${selectedService?.nome} da Família`}
-                                className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-                                required
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Vagas Totais</label>
-                                <select
-                                    name="vagas_totais"
-                                    value={formData.vagas_totais}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100"
-                                >
-                                    {[2, 3, 4, 5, 6].map(num => (
-                                        <option key={num} value={num}>{num} Vagas</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Valor da Cota (Mensal)</label>
-                                <input
-                                    type="text"
-                                    name="valor_cota"
-                                    value={formData.valor_cota}
-                                    onChange={handleChange}
-                                    placeholder="R$ 0,00"
-                                    className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-                                    required
-                                />
-                                <p className="text-xs text-gray-500 mt-1">Use vírgula para centavos (ex: 15,90)</p>
-                            </div>
-                        </div>
-
-                        <div className="pt-4 flex justify-between">
-                            <button
-                                type="button"
-                                onClick={handleBack}
-                                className="text-gray-500 hover:text-gray-900 font-medium px-4"
-                            >
-                                Voltar
-                            </button>
-                            <button
-                                type="button"
-                                onClick={handleNext}
-                                disabled={!formData.titulo || !formData.valor_cota}
-                                className="bg-rose-500 hover:bg-rose-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-3 px-8 rounded-xl transition-colors"
-                            >
-                                Continuar
-                            </button>
-                        </div>
-                    </div>
+                {step === 2 && selectedBrand && (
+                    <PlanSelector
+                        services={servicos}
+                        selectedBrand={selectedBrand}
+                        onSelectPlan={handleSelectPlan}
+                        onBack={handleBackToBrand}
+                    />
                 )}
 
-                {/* Step 3: Sensitive Data */}
-                {step === 3 && (
-                    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                        <div className="bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-100 dark:border-yellow-900 p-4 rounded-xl flex gap-3">
-                            <span className="text-2xl">🔒</span>
-                            <div>
-                                <h3 className="font-bold text-yellow-800 dark:text-yellow-400">Dados Protegidos</h3>
-                                <p className="text-sm text-yellow-700 dark:text-yellow-500">
-                                    Estas informações só serão reveladas para membros que tiverem o pagamento confirmado por você.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Chave Pix (para receber)</label>
-                            <input
-                                type="text"
-                                name="pix_key"
-                                value={formData.pix_key}
-                                onChange={handleChange}
-                                placeholder="CPF, Email ou Aleatória"
-                                className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-                                required
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Login do Serviço</label>
-                                <input
-                                    type="text"
-                                    name="login_acesso"
-                                    value={formData.login_acesso}
-                                    onChange={handleChange}
-                                    placeholder="email@exemplo.com"
-                                    className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Senha do Serviço</label>
-                                <input
-                                    type="text"
-                                    name="senha_acesso"
-                                    value={formData.senha_acesso}
-                                    onChange={handleChange}
-                                    placeholder="********"
-                                    className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        <div className="pt-4 flex justify-between items-center">
-                            <button
-                                type="button"
-                                onClick={handleBack}
-                                className="text-gray-500 hover:text-gray-900 font-medium px-4"
-                            >
-                                Voltar
-                            </button>
-                            <button
-                                type="submit"
-                                disabled={loading || !formData.pix_key || !formData.login_acesso || !formData.senha_acesso}
-                                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-3 px-8 rounded-xl transition-colors flex items-center gap-2"
-                            >
-                                {loading ? "Criando..." : "Finalizar e Criar Grupo"}
-                            </button>
-                        </div>
-                    </div>
+                {step === 3 && selectedPlan && (
+                    <GroupConfigForm
+                        selectedPlan={selectedPlan}
+                        onBack={handleBackToPlan}
+                    />
                 )}
-            </form>
+            </div>
         </div>
     );
 }

@@ -3,6 +3,7 @@ import { Navbar } from "@/components/ui/navbar";
 import { approveMember } from "@/app/actions/approve-member";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { ConfirmPaymentButton } from "@/components/ui/confirm-payment-button";
 
 export default async function GroupDetailsPage({
     params,
@@ -165,20 +166,7 @@ export default async function GroupDetailsPage({
                                                 Pago
                                             </span>
                                         ) : (
-                                            <form
-                                                action={async () => {
-                                                    "use server";
-                                                    const { confirmPayment } = await import("@/app/actions/manage-payment");
-                                                    await confirmPayment(membro.id, id);
-                                                }}
-                                            >
-                                                <button
-                                                    type="submit"
-                                                    className="bg-green-500 hover:bg-green-600 text-white text-xs font-bold px-3 py-2 rounded-xl transition-colors"
-                                                >
-                                                    Confirmar Pagamento
-                                                </button>
-                                            </form>
+                                            <ConfirmPaymentButton memberId={membro.id} groupId={id} />
                                         )}
 
                                         <form

@@ -16,7 +16,7 @@ export async function approveMember(memberId: string, grupoId: string) {
     // Check if the current user is the leader of the group this member belongs to
     const { data: grupo } = await supabase
         .from("grupos")
-        .select("lider_id")
+        .select("lider_id, titulo")
         .eq("id", grupoId)
         .single();
 
@@ -33,6 +33,22 @@ export async function approveMember(memberId: string, grupoId: string) {
     if (error) {
         console.error("Erro ao aprovar membro:", error);
         throw new Error("Erro ao aprovar membro");
+    }
+
+    // Notify Member
+    const { data: member } = await supabase
+        .from("membros")
+        .select("user_id")
+        .eq("id", memberId)
+        .single();
+
+    if (member) {
+        await supabase.from("notificacoes").insert({
+            user_id: member.user_id,
+            mensagem: `Sua solicitação para o grupo "${grupo.titulo}" foi aprovada! Realize o pagamento.`,
+            tipo: "aprovacao",
+            link: `/grupos/${grupoId}`
+        });
     }
 
     // 4. Revalidate

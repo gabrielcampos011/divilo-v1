@@ -50,6 +50,22 @@ export async function requestEntry(grupoId: string) {
         return { error: "Erro ao processar solicitação." };
     }
 
+    // Notify Leader
+    const { data: groupInfo } = await supabase
+        .from("grupos")
+        .select("lider_id, titulo")
+        .eq("id", grupoId)
+        .single();
+
+    if (groupInfo) {
+        await supabase.from("notificacoes").insert({
+            user_id: groupInfo.lider_id,
+            mensagem: `Nova solicitação de entrada no grupo "${groupInfo.titulo}"`,
+            tipo: "solicitacao",
+            link: `/lider/grupos/${grupoId}`
+        });
+    }
+
     revalidatePath(`/grupos/${grupoId}`);
     return { success: true };
 }

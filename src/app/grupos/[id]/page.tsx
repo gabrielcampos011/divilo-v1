@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { Navbar } from "@/components/ui/navbar";
 import { requestEntry } from "@/app/actions/join-group";
 import Link from "next/link";
+import { PayPixButton } from "@/components/ui/pay-pix-button";
 
 export default async function PublicGroupDetailsPage({
     params,
@@ -183,9 +184,7 @@ export default async function PublicGroupDetailsPage({
                                                 <p className="text-sm flex-1">
                                                     Após realizar o pagamento no app do seu banco, avise o líder para liberar seu acesso.
                                                 </p>
-                                                <button className="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-2 px-4 rounded-lg text-sm transition-colors whitespace-nowrap">
-                                                    Já paguei
-                                                </button>
+                                                <PayPixButton />
                                             </div>
                                         )}
                                     </div>
