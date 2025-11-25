@@ -57,9 +57,9 @@ export function CreateGroupWizard({ servicos }: { servicos: Servico[] }) {
     const selectedService = servicos.find(s => s.id === formData.servico_id);
 
     return (
-        <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-[0_2px_8px_rgba(0,0,0,0.06)] border-none overflow-hidden">
             {/* Progress Bar */}
-            <div className="bg-gray-50 px-8 py-4 border-b border-gray-100 flex justify-between items-center">
+            <div className="bg-gray-50 dark:bg-gray-800 px-8 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                     <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step >= 1 ? 'bg-rose-500 text-white' : 'bg-gray-200 text-gray-500'}`}>1</span>
                     <span className="text-sm font-medium hidden sm:block">Serviço</span>
@@ -80,15 +80,15 @@ export function CreateGroupWizard({ servicos }: { servicos: Servico[] }) {
                 {/* Step 1: Service Selection */}
                 {step === 1 && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                        <h2 className="text-2xl font-bold text-gray-900">Qual serviço você vai compartilhar?</h2>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-50">Qual serviço você vai compartilhar?</h2>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {servicos.map((servico) => (
                                 <label
                                     key={servico.id}
                                     className={`relative flex items-center p-4 cursor-pointer rounded-2xl border-2 transition-all ${formData.servico_id === servico.id
-                                        ? 'border-rose-500 bg-rose-50'
-                                        : 'border-gray-100 hover:border-rose-200'
+                                        ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/30'
+                                        : 'border-gray-100 dark:border-gray-700 hover:border-rose-200 dark:hover:border-rose-800'
                                         }`}
                                 >
                                     <input
@@ -99,7 +99,7 @@ export function CreateGroupWizard({ servicos }: { servicos: Servico[] }) {
                                         onChange={handleChange}
                                         className="sr-only"
                                     />
-                                    <span className="flex-1 font-medium text-gray-900">{servico.nome}</span>
+                                    <span className="flex-1 font-medium text-gray-900 dark:text-gray-100">{servico.nome}</span>
                                     {formData.servico_id === servico.id && (
                                         <span className="text-rose-500">✓</span>
                                     )}
@@ -123,29 +123,29 @@ export function CreateGroupWizard({ servicos }: { servicos: Servico[] }) {
                 {/* Step 2: Public Details */}
                 {step === 2 && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                        <h2 className="text-2xl font-bold text-gray-900">Detalhes do Grupo</h2>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-50">Detalhes do Grupo</h2>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Título do Grupo</label>
+                            <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Título do Grupo</label>
                             <input
                                 type="text"
                                 name="titulo"
                                 value={formData.titulo}
                                 onChange={handleChange}
                                 placeholder={`Ex: ${selectedService?.nome} da Família`}
-                                className="w-full px-4 py-3 rounded-xl bg-white border border-gray-100 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 outline-none transition-all"
+                                className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                                 required
                             />
                         </div>
 
                         <div className="grid grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Vagas Totais</label>
+                                <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Vagas Totais</label>
                                 <select
                                     name="vagas_totais"
                                     value={formData.vagas_totais}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 rounded-xl bg-white border border-gray-100 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 outline-none transition-all"
+                                    className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100"
                                 >
                                     {[2, 3, 4, 5, 6].map(num => (
                                         <option key={num} value={num}>{num} Vagas</option>
@@ -153,14 +153,14 @@ export function CreateGroupWizard({ servicos }: { servicos: Servico[] }) {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Valor da Cota (Mensal)</label>
+                                <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Valor da Cota (Mensal)</label>
                                 <input
                                     type="text"
                                     name="valor_cota"
                                     value={formData.valor_cota}
                                     onChange={handleChange}
                                     placeholder="R$ 0,00"
-                                    className="w-full px-4 py-3 rounded-xl bg-white border border-gray-100 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 outline-none transition-all"
+                                    className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                                     required
                                 />
                                 <p className="text-xs text-gray-500 mt-1">Use vírgula para centavos (ex: 15,90)</p>
@@ -190,51 +190,51 @@ export function CreateGroupWizard({ servicos }: { servicos: Servico[] }) {
                 {/* Step 3: Sensitive Data */}
                 {step === 3 && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                        <div className="bg-yellow-50 border border-yellow-100 p-4 rounded-xl flex gap-3">
+                        <div className="bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-100 dark:border-yellow-900 p-4 rounded-xl flex gap-3">
                             <span className="text-2xl">🔒</span>
                             <div>
-                                <h3 className="font-bold text-yellow-800">Dados Protegidos</h3>
-                                <p className="text-sm text-yellow-700">
+                                <h3 className="font-bold text-yellow-800 dark:text-yellow-400">Dados Protegidos</h3>
+                                <p className="text-sm text-yellow-700 dark:text-yellow-500">
                                     Estas informações só serão reveladas para membros que tiverem o pagamento confirmado por você.
                                 </p>
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Chave Pix (para receber)</label>
+                            <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Chave Pix (para receber)</label>
                             <input
                                 type="text"
                                 name="pix_key"
                                 value={formData.pix_key}
                                 onChange={handleChange}
                                 placeholder="CPF, Email ou Aleatória"
-                                className="w-full px-4 py-3 rounded-xl bg-white border border-gray-100 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 outline-none transition-all"
+                                className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                                 required
                             />
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Login do Serviço</label>
+                                <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Login do Serviço</label>
                                 <input
                                     type="text"
                                     name="login_acesso"
                                     value={formData.login_acesso}
                                     onChange={handleChange}
                                     placeholder="email@exemplo.com"
-                                    className="w-full px-4 py-3 rounded-xl bg-white border border-gray-100 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 outline-none transition-all"
+                                    className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                                     required
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Senha do Serviço</label>
+                                <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Senha do Serviço</label>
                                 <input
                                     type="text"
                                     name="senha_acesso"
                                     value={formData.senha_acesso}
                                     onChange={handleChange}
                                     placeholder="********"
-                                    className="w-full px-4 py-3 rounded-xl bg-white border border-gray-100 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 outline-none transition-all"
+                                    className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                                     required
                                 />
                             </div>

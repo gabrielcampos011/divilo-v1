@@ -27,7 +27,7 @@ export function GroupCard({
             href={isPublic ? `/grupos/${id}` : `/lider/grupos/${id}`}
             className="block group"
         >
-            <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-premium-sm hover:shadow-premium-md hover:-translate-y-1 transition-all duration-300 border border-gray-100 dark:border-gray-800">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:shadow-premium-md hover:-translate-y-1 transition-all duration-300 border-none">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-6">
                     <div className="flex-1">

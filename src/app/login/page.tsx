@@ -58,7 +58,7 @@ export default function LoginPage() {
                         <div>
                             <label
                                 htmlFor="email"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                className="block text-sm font-bold text-gray-900 dark:text-gray-100"
                             >
                                 Endereço de Email
                             </label>
@@ -69,7 +69,7 @@ export default function LoginPage() {
                                     type="email"
                                     autoComplete="email"
                                     required
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-xl shadow-sm placeholder-gray-400 dark:placeholder-gray-600 bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
+                                    className="appearance-none block w-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border-none rounded-xl shadow-sm placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-rose-500 sm:text-sm"
                                 />
                             </div>
                         </div>
@@ -77,7 +77,7 @@ export default function LoginPage() {
                         <div>
                             <label
                                 htmlFor="password"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                className="block text-sm font-bold text-gray-900 dark:text-gray-100"
                             >
                                 Senha
                             </label>
@@ -89,7 +89,7 @@ export default function LoginPage() {
                                     autoComplete="current-password"
                                     required
                                     minLength={6}
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-xl shadow-sm placeholder-gray-400 dark:placeholder-gray-600 bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
+                                    className="appearance-none block w-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border-none rounded-xl shadow-sm placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-rose-500 sm:text-sm"
                                 />
                             </div>
                         </div>

@@ -1,16 +1,9 @@
 "use client";
 
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useDarkMode } from "@/hooks/use-dark-mode";
 
 export function ThemeToggle() {
-    const { theme, setTheme } = useTheme();
-    const [mounted, setMounted] = useState(false);
-
-    // Evitar hydration mismatch
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+    const { theme, toggleTheme, mounted } = useDarkMode();
 
     if (!mounted) {
         return (
@@ -20,7 +13,7 @@ export function ThemeToggle() {
 
     return (
         <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onClick={toggleTheme}
             className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-all hover:scale-105"
             aria-label="Alternar tema"
         >
@@ -40,7 +33,7 @@ export function ThemeToggle() {
                 </svg>
             ) : (
                 <svg
-                    className="w-5 h-5 text-gray-700"
+                    className="w-5 h-5 text-gray-700 dark:text-gray-300"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
