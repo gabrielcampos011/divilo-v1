@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: 'class',
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -16,8 +17,8 @@ const config: Config = {
           foreground: "#FFFFFF",
         },
         secondary: {
-            DEFAULT: "#F9FAFB", // Gray-50
-            foreground: "#1F2937", // Gray-800
+          DEFAULT: "#F9FAFB", // Gray-50
+          foreground: "#1F2937", // Gray-800
         }
       },
       borderRadius: {

@@ -27,14 +27,14 @@ export function GroupCard({
             href={isPublic ? `/grupos/${id}` : `/lider/grupos/${id}`}
             className="block group"
         >
-            <div className="bg-white rounded-2xl p-8 shadow-premium-sm hover:shadow-premium-md hover:-translate-y-1 transition-all duration-300">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-premium-sm hover:shadow-premium-md hover:-translate-y-1 transition-all duration-300 border border-gray-100 dark:border-gray-800">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-6">
                     <div className="flex-1">
-                        <div className="inline-block bg-rose-50 text-rose-600 text-xs font-semibold px-3 py-1 rounded-full mb-3">
+                        <div className="inline-block bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400 text-xs font-semibold px-3 py-1 rounded-full mb-3">
                             {servico}
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 group-hover:text-rose-500 transition-colors tracking-tight">
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-50 group-hover:text-rose-500 dark:group-hover:text-rose-400 transition-colors tracking-tight">
                             {titulo}
                         </h3>
                     </div>
@@ -43,33 +43,33 @@ export function GroupCard({
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 gap-6 mb-6">
                     <div>
-                        <p className="text-xs text-gray-400 uppercase font-semibold mb-1 tracking-wide">
+                        <p className="text-xs text-gray-400 dark:text-gray-500 uppercase font-semibold mb-1 tracking-wide">
                             Valor da Cota
                         </p>
-                        <p className="text-2xl font-bold text-gray-900">
+                        <p className="text-2xl font-bold text-gray-900 dark:text-gray-50">
                             {new Intl.NumberFormat("pt-BR", {
                                 style: "currency",
                                 currency: "BRL",
                             }).format(valor_cota)}
-                            <span className="text-sm text-gray-400 font-normal">/mês</span>
+                            <span className="text-sm text-gray-400 dark:text-gray-500 font-normal">/mês</span>
                         </p>
                     </div>
                     <div>
-                        <p className="text-xs text-gray-400 uppercase font-semibold mb-1 tracking-wide">
+                        <p className="text-xs text-gray-400 dark:text-gray-500 uppercase font-semibold mb-1 tracking-wide">
                             Vagas
                         </p>
-                        <p className="text-2xl font-bold text-gray-900">
+                        <p className="text-2xl font-bold text-gray-900 dark:text-gray-50">
                             {vagasDisponiveis}
-                            <span className="text-sm text-gray-400 font-normal">/{vagas_totais}</span>
+                            <span className="text-sm text-gray-400 dark:text-gray-500 font-normal">/{vagas_totais}</span>
                         </p>
                     </div>
                 </div>
 
                 {/* Progress Bar */}
                 <div className="mb-6">
-                    <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                    <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 overflow-hidden">
                         <div
-                            className="bg-rose-500 h-2 rounded-full transition-all duration-500"
+                            className="bg-rose-500 dark:bg-rose-600 h-2 rounded-full transition-all duration-500"
                             style={{ width: `${progressPercentage}%` }}
                         ></div>
                     </div>
@@ -77,10 +77,10 @@ export function GroupCard({
 
                 {/* Action */}
                 <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-500">
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
                         {vagasDisponiveis > 0 ? `${vagasDisponiveis} vaga${vagasDisponiveis > 1 ? 's' : ''} disponível${vagasDisponiveis > 1 ? 'eis' : ''}` : 'Grupo cheio'}
                     </span>
-                    <span className="text-rose-500 font-semibold text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                    <span className="text-rose-500 dark:text-rose-400 font-semibold text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                         {isPublic ? 'Ver detalhes' : 'Gerenciar'}
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

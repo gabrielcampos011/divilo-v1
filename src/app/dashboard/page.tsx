@@ -51,16 +51,16 @@ export default async function DashboardPage() {
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                 {/* Header */}
                 <div className="mb-12">
-                    <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-2">Dashboard</h1>
-                    <p className="text-gray-500 text-lg">Gerencie suas assinaturas e grupos</p>
+                    <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-50 tracking-tight mb-2">Dashboard</h1>
+                    <p className="text-gray-500 dark:text-gray-400 text-lg">Gerencie suas assinaturas e grupos</p>
                 </div>
 
                 {/* Seção A - Minhas Assinaturas (PRIORIDADE) */}
                 <section className="mb-16">
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Minhas Assinaturas</h2>
-                            <p className="text-gray-500 mt-1">Grupos dos quais você participa</p>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-50 tracking-tight">Minhas Assinaturas</h2>
+                            <p className="text-gray-500 dark:text-gray-400 mt-1">Grupos dos quais você participa</p>
                         </div>
                     </div>
 
@@ -78,19 +78,19 @@ export default async function DashboardPage() {
                             ))}
                         </div>
                     ) : (
-                        <div className="bg-white rounded-3xl shadow-premium-sm p-12 text-center">
-                            <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 text-4xl">
+                        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-premium-sm border border-gray-100 dark:border-gray-800 p-12 text-center">
+                            <div className="w-20 h-20 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-6 text-4xl">
                                 🔍
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-3 tracking-tight">
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-50 mb-3 tracking-tight">
                                 Você ainda não participa de nenhum grupo
                             </h3>
-                            <p className="text-gray-400 max-w-md mx-auto mb-8 text-lg">
+                            <p className="text-gray-400 dark:text-gray-500 max-w-md mx-auto mb-8 text-lg">
                                 Explore os grupos disponíveis e comece a economizar em suas assinaturas favoritas.
                             </p>
                             <Link
                                 href="/grupos"
-                                className="bg-rose-500 hover:bg-rose-600 text-white font-semibold py-4 px-10 rounded-full transition-all shadow-rose-glow hover:shadow-rose-glow-lg hover:-translate-y-0.5 inline-block"
+                                className="bg-rose-500 hover:bg-rose-600 dark:bg-rose-600 dark:hover:bg-rose-700 text-white font-semibold py-4 px-10 rounded-full transition-all shadow-rose-glow hover:shadow-rose-glow-lg hover:-translate-y-0.5 inline-block"
                             >
                                 Explorar Grupos
                             </Link>
@@ -103,8 +103,8 @@ export default async function DashboardPage() {
                     <section>
                         <div className="flex items-center justify-between mb-8">
                             <div>
-                                <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Grupos que Lidero</h2>
-                                <p className="text-gray-500 mt-1">Gerencie seus grupos e aprovações</p>
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-50 tracking-tight">Grupos que Lidero</h2>
+                                <p className="text-gray-500 dark:text-gray-400 mt-1">Gerencie seus grupos e aprovações</p>
                             </div>
                             <Link
                                 href="/lider/novo"
@@ -133,19 +133,19 @@ export default async function DashboardPage() {
                 {/* CTA para criar grupo (se não for líder ainda) */}
                 {(!gruposLiderados || gruposLiderados.length === 0) && (
                     <section className="mt-16">
-                        <div className="bg-gradient-to-br from-rose-50 to-white rounded-3xl p-12 shadow-premium-sm text-center">
-                            <div className="w-20 h-20 bg-rose-100 rounded-2xl flex items-center justify-center mx-auto mb-6 text-4xl">
+                        <div className="bg-gradient-to-br from-rose-50 to-white dark:from-gray-900 dark:to-gray-800 rounded-3xl p-12 shadow-premium-sm border border-gray-100 dark:border-gray-800 text-center">
+                            <div className="w-20 h-20 bg-rose-100 dark:bg-rose-950 rounded-2xl flex items-center justify-center mx-auto mb-6 text-4xl">
                                 👑
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-3 tracking-tight">
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-50 mb-3 tracking-tight">
                                 Quer economizar ainda mais?
                             </h3>
-                            <p className="text-gray-500 max-w-md mx-auto mb-8 text-lg">
+                            <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-8 text-lg">
                                 Crie seu próprio grupo e divida os custos da sua assinatura com outras pessoas.
                             </p>
                             <Link
                                 href="/lider/novo"
-                                className="bg-rose-500 hover:bg-rose-600 text-white font-semibold py-4 px-10 rounded-full transition-all shadow-rose-glow hover:shadow-rose-glow-lg hover:-translate-y-0.5 inline-block"
+                                className="bg-rose-500 hover:bg-rose-600 dark:bg-rose-600 dark:hover:bg-rose-700 text-white font-semibold py-4 px-10 rounded-full transition-all shadow-rose-glow hover:shadow-rose-glow-lg hover:-translate-y-0.5 inline-block"
                             >
                                 Criar Meu Primeiro Grupo
                             </Link>
