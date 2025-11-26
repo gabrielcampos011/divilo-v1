@@ -6,10 +6,11 @@ import { createGroup } from "@/app/actions/create-group";
 
 interface GroupConfigFormProps {
     selectedPlan: Service;
+    customServiceName?: string;
     onBack: () => void;
 }
 
-export function GroupConfigForm({ selectedPlan, onBack }: GroupConfigFormProps) {
+export function GroupConfigForm({ selectedPlan, customServiceName, onBack }: GroupConfigFormProps) {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         titulo: "",
@@ -19,6 +20,9 @@ export function GroupConfigForm({ selectedPlan, onBack }: GroupConfigFormProps) 
         contato_lider: "",
         login_acesso: "",
         senha_acesso: "",
+        tem_caucao: false,
+        valor_caucao: "",
+        fidelidade_meses: "0",
     });
 
     // Pre-fill form based on selected plan
@@ -26,12 +30,12 @@ export function GroupConfigForm({ selectedPlan, onBack }: GroupConfigFormProps) 
         if (selectedPlan) {
             setFormData(prev => ({
                 ...prev,
-                titulo: `${selectedPlan.nome_completo}`,
+                titulo: customServiceName || `${selectedPlan.nome_completo}`,
                 vagas_totais: selectedPlan.max_vagas_padrao?.toString() || "5",
                 valor_cota: selectedPlan.valor_por_membro_divilo?.toFixed(2).replace('.', ',') || ""
             }));
         }
-    }, [selectedPlan]);
+    }, [selectedPlan, customServiceName]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -44,13 +48,21 @@ export function GroupConfigForm({ selectedPlan, onBack }: GroupConfigFormProps) 
 
         const data = new FormData();
         data.append("servico_id", selectedPlan.id);
+
+        // Append form data with proper type conversion
         Object.entries(formData).forEach(([key, value]) => {
-            data.append(key, value);
+            data.append(key, value.toString());
         });
 
         try {
             await createGroup(data);
+            // Redirect happens in server action, no need to handle success here
         } catch (error) {
+            // Only show error if it's NOT a redirect (Next.js throws on redirect)
+            if (error && typeof error === 'object' && 'digest' in error) {
+                // This is a Next.js redirect, ignore it
+                return;
+            }
             console.error(error);
             alert("Erro ao criar grupo. Tente novamente.");
             setLoading(false);
@@ -116,6 +128,70 @@ export function GroupConfigForm({ selectedPlan, onBack }: GroupConfigFormProps) 
                             className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                             required
                         />
+                    </div>
+                </div>
+
+                {/* Regras Financeiras & Contrato */}
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border border-blue-100 dark:border-blue-900 p-6 rounded-2xl space-y-4">
+                    <h3 className="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+                        <span>💼</span>
+                        Regras Financeiras & Contrato
+                    </h3>
+
+                    {/* Caução Toggle */}
+                    <div className="flex items-start gap-4">
+                        <input
+                            type="checkbox"
+                            id="tem_caucao"
+                            checked={formData.tem_caucao}
+                            onChange={(e) => setFormData(prev => ({ ...prev, tem_caucao: e.target.checked, valor_caucao: e.target.checked ? formData.valor_cota : "" }))}
+                            className="mt-1 w-5 h-5 text-rose-500 rounded focus:ring-2 focus:ring-rose-500"
+                        />
+                        <div className="flex-1">
+                            <label htmlFor="tem_caucao" className="block text-sm font-bold text-gray-900 dark:text-gray-100 cursor-pointer">
+                                Exigir Caução?
+                            </label>
+                            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                                O membro paga uma mensalidade extra na entrada como garantia.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Valor da Caução (conditional) */}
+                    {formData.tem_caucao && (
+                        <div className="ml-9">
+                            <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Valor da Caução</label>
+                            <input
+                                type="text"
+                                name="valor_caucao"
+                                value={formData.valor_caucao}
+                                onChange={handleChange}
+                                placeholder="R$ 0,00"
+                                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                                required={formData.tem_caucao}
+                            />
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                Sugestão: Igual ao valor da mensalidade ({formData.valor_cota})
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Fidelidade */}
+                    <div>
+                        <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Fidelidade Mínima</label>
+                        <select
+                            name="fidelidade_meses"
+                            value={formData.fidelidade_meses}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100"
+                        >
+                            <option value="0">Sem fidelidade</option>
+                            <option value="6">6 Meses</option>
+                            <option value="12">12 Meses</option>
+                        </select>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Define o compromisso de permanência do membro.
+                        </p>
                     </div>
                 </div>
 

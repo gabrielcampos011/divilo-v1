@@ -3,7 +3,7 @@ import { Navbar } from "@/components/ui/navbar";
 import { approveMember } from "@/app/actions/approve-member";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ConfirmPaymentButton } from "@/components/ui/confirm-payment-button";
+import { MemberListItem } from "@/components/groups/member-list-item";
 
 export default async function GroupDetailsPage({
     params,
@@ -46,14 +46,17 @@ export default async function GroupDetailsPage({
         );
     }
 
-    // Fetch Members
+    // Fetch Members with profile names
     const { data: membros } = await supabase
         .from("membros")
         .select(`
       id,
       status,
       data_solicitacao,
-      user_id
+      user_id,
+      profiles:user_id (
+        full_name
+      )
     `)
         .eq("grupo_id", id)
         .order("data_solicitacao", { ascending: false });
@@ -62,7 +65,7 @@ export default async function GroupDetailsPage({
     const aprovados = membros?.filter((m) => ["aprovado", "pago"].includes(m.status)) || [];
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 dark:bg-[#050505]">
             <Navbar />
 
             <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -70,20 +73,24 @@ export default async function GroupDetailsPage({
                 <div className="mb-8">
                     <Link
                         href="/lider"
-                        className="text-sm text-gray-500 hover:text-gray-900 mb-4 inline-block"
+                        className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-4 inline-block transition-colors"
                     >
                         &larr; Voltar para Meus Grupos
                     </Link>
-                    <div className="flex items-start justify-between">
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900">{grupo.titulo}</h1>
-                            <p className="text-gray-600 mt-1">
-                                {grupo.servicos?.nome} • {grupo.vagas_ocupadas}/{grupo.vagas_totais} Vagas
+                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{grupo.titulo}</h1>
+                            <p className="text-gray-600 dark:text-gray-400 mt-1 flex items-center gap-2">
+                                <span className="bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 text-xs font-bold px-2 py-0.5 rounded-full uppercase">
+                                    {grupo.servicos?.nome}
+                                </span>
+                                <span>•</span>
+                                <span>{grupo.vagas_ocupadas}/{grupo.vagas_totais} Vagas ocupadas</span>
                             </p>
                         </div>
-                        <div className="bg-white px-4 py-2 rounded-xl border border-gray-100 shadow-sm text-center">
-                            <p className="text-xs text-gray-500 uppercase font-bold">Cota</p>
-                            <p className="text-xl font-bold text-rose-500">
+                        <div className="bg-white dark:bg-gray-900 px-6 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm text-center min-w-[150px]">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold mb-1">Valor da Cota</p>
+                            <p className="text-2xl font-bold text-rose-500">
                                 {new Intl.NumberFormat("pt-BR", {
                                     style: "currency",
                                     currency: "BRL",
@@ -94,12 +101,12 @@ export default async function GroupDetailsPage({
                 </div>
 
                 {/* Solicitações Pendentes */}
-                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-                    <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                        <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden mb-8">
+                    <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gray-50/50 dark:bg-gray-800/50">
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             Solicitações Pendentes
                             {pendentes.length > 0 && (
-                                <span className="bg-rose-100 text-rose-600 text-xs px-2 py-1 rounded-full">
+                                <span className="bg-rose-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">
                                     {pendentes.length}
                                 </span>
                             )}
@@ -107,13 +114,13 @@ export default async function GroupDetailsPage({
                     </div>
 
                     {pendentes.length > 0 ? (
-                        <div className="divide-y divide-gray-100">
+                        <div className="divide-y divide-gray-100 dark:divide-gray-800">
                             {pendentes.map((membro) => (
-                                <div key={membro.id} className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                                <div key={membro.id} className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                     <div>
-                                        <p className="font-medium text-gray-900">Usuário #{membro.user_id.slice(0, 8)}</p>
-                                        <p className="text-sm text-gray-500">
-                                            Solicitado em {new Date(membro.data_solicitacao).toLocaleDateString()}
+                                        <p className="font-bold text-gray-900 dark:text-white">Usuário #{membro.user_id.slice(0, 8)}</p>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                                            Solicitou entrada em {new Date(membro.data_solicitacao).toLocaleDateString()}
                                         </p>
                                     </div>
                                     <form
@@ -124,7 +131,7 @@ export default async function GroupDetailsPage({
                                     >
                                         <button
                                             type="submit"
-                                            className="bg-rose-500 hover:bg-rose-600 text-white font-semibold py-2 px-4 rounded-xl transition-colors text-sm"
+                                            className="bg-rose-500 hover:bg-rose-600 text-white font-bold py-2.5 px-6 rounded-xl transition-all shadow-lg shadow-rose-200 dark:shadow-rose-900/20 hover:-translate-y-0.5 text-sm"
                                         >
                                             Aprovar Entrada
                                         </button>
@@ -133,64 +140,44 @@ export default async function GroupDetailsPage({
                             ))}
                         </div>
                     ) : (
-                        <div className="p-12 text-center text-gray-500">
-                            Nenhuma solicitação pendente no momento.
+                        <div className="p-12 text-center">
+                            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+                                <span className="text-2xl">📭</span>
+                            </div>
+                            <p className="text-gray-500 dark:text-gray-400 font-medium">Nenhuma solicitação pendente</p>
+                            <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Novos interessados aparecerão aqui.</p>
                         </div>
                     )}
                 </div>
 
                 {/* Membros Ativos */}
-                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="p-6 border-b border-gray-100">
-                        <h2 className="text-lg font-bold text-gray-900">Membros do Grupo</h2>
+                <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    <div className="p-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50">
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            Membros do Grupo
+                            <span className="bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs px-2 py-1 rounded-full">
+                                {aprovados.length}
+                            </span>
+                        </h2>
                     </div>
 
                     {aprovados.length > 0 ? (
-                        <div className="divide-y divide-gray-100">
+                        <div className="divide-y divide-gray-100 dark:divide-gray-800">
                             {aprovados.map((membro) => (
-                                <div key={membro.id} className="p-6 flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 font-bold">
-                                            U
-                                        </div>
-                                        <div>
-                                            <p className="font-medium text-gray-900">Usuário #{membro.user_id.slice(0, 8)}</p>
-                                            <p className="text-sm text-gray-500">
-                                                {membro.status === 'pago' ? 'Pagamento Confirmado' : 'Aguardando Pagamento'}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        {membro.status === 'pago' ? (
-                                            <span className="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full">
-                                                Pago
-                                            </span>
-                                        ) : (
-                                            <ConfirmPaymentButton memberId={membro.id} groupId={id} />
-                                        )}
-
-                                        <form
-                                            action={async () => {
-                                                "use server";
-                                                const { removeMember } = await import("@/app/actions/manage-payment");
-                                                await removeMember(membro.id, id);
-                                            }}
-                                        >
-                                            <button
-                                                type="submit"
-                                                className="text-gray-400 hover:text-red-500 transition-colors p-2"
-                                                title="Remover Membro"
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
+                                <MemberListItem
+                                    key={membro.id}
+                                    member={membro}
+                                    groupId={id}
+                                />
                             ))}
                         </div>
                     ) : (
-                        <div className="p-12 text-center text-gray-500">
-                            Ainda não há membros aprovados neste grupo.
+                        <div className="p-12 text-center">
+                            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+                                <span className="text-2xl">👥</span>
+                            </div>
+                            <p className="text-gray-500 dark:text-gray-400 font-medium">Ainda não há membros no grupo</p>
+                            <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Compartilhe o link do grupo para atrair interessados.</p>
                         </div>
                     )}
                 </div>

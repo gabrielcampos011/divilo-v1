@@ -67,19 +67,43 @@ export function Navbar() {
                             </Link>
                             {user && (
                                 <Link
-                                    href="/dashboard"
+                                    href="/lider"
                                     className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors"
                                 >
                                     Meus Grupos
                                 </Link>
                             )}
                             <Link
-                                href="/como-funciona"
+                                href="/ajuda"
                                 className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors"
                             >
-                                Como Funciona
+                                Ajuda
                             </Link>
                         </div>
+                    </div>
+
+                    {/* Search Bar */}
+                    <div className="hidden md:flex flex-1 max-w-md mx-8">
+                        <form onSubmit={(e) => {
+                            e.preventDefault();
+                            const form = e.target as HTMLFormElement;
+                            const input = form.elements.namedItem("search") as HTMLInputElement;
+                            if (input.value) {
+                                window.location.href = `/grupos?search=${encodeURIComponent(input.value)}`;
+                            }
+                        }} className="w-full relative group">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg className="h-4 w-4 text-gray-400 group-focus-within:text-rose-500 transition-colors" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                                </svg>
+                            </div>
+                            <input
+                                type="text"
+                                name="search"
+                                placeholder="Buscar grupos..."
+                                className="block w-full pl-10 pr-3 py-2 border border-gray-200 dark:border-gray-800 rounded-xl leading-5 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 focus:bg-white dark:focus:bg-gray-950 transition-all sm:text-sm"
+                            />
+                        </form>
                     </div>
 
                     {/* Right Side Actions */}

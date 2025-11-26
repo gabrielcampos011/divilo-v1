@@ -90,6 +90,24 @@ export function ServiceBrandSelector({ services, onSelectBrand }: ServiceBrandSe
                         </span>
                     </button>
                 ))}
+
+                {/* Custom Service Option */}
+                <button
+                    onClick={() => onSelectBrand('CUSTOM')}
+                    className="group relative flex flex-col items-center justify-center p-6 h-32 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 hover:border-rose-500 dark:hover:border-rose-500 hover:shadow-lg transition-all text-center"
+                >
+                    <div className="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-rose-500">
+                            <path d="M5 12h14" /><path d="M12 5v14" />
+                        </svg>
+                    </div>
+                    <span className="font-bold text-sm text-gray-900 dark:text-gray-100 group-hover:text-rose-500 transition-colors">
+                        Outro / Personalizado
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Serviço não listado
+                    </span>
+                </button>
             </div>
 
             {filteredBrands.length === 0 && (

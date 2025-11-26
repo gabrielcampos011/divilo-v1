@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Navbar } from "@/components/ui/navbar";
 import { GroupCard } from "@/components/ui/group-card";
+import { useSearchParams } from "next/navigation";
 
 type Grupo = {
     id: string;
@@ -17,11 +18,13 @@ type Grupo = {
     } | null;
 };
 
-export default function GroupsPage() {
+function GroupsContent() {
     const [grupos, setGrupos] = useState<Grupo[]>([]);
     const [filter, setFilter] = useState<string>("Todos");
     const [loading, setLoading] = useState(true);
     const supabase = createClient();
+    const searchParams = useSearchParams();
+    const searchQuery = searchParams.get("search")?.toLowerCase() || "";
 
     useEffect(() => {
         async function fetchGrupos() {
@@ -44,9 +47,14 @@ export default function GroupsPage() {
         fetchGrupos();
     }, []);
 
-    const filteredGrupos = filter === "Todos"
-        ? grupos
-        : grupos.filter((g) => g.servicos?.categoria === filter);
+    const filteredGrupos = grupos.filter((g) => {
+        const matchesCategory = filter === "Todos" || g.servicos?.categoria === filter;
+        const matchesSearch = searchQuery === "" ||
+            g.titulo.toLowerCase().includes(searchQuery) ||
+            g.servicos?.nome.toLowerCase().includes(searchQuery);
+
+        return matchesCategory && matchesSearch;
+    });
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-[#050505]">
@@ -57,6 +65,11 @@ export default function GroupsPage() {
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Explorar Grupos</h1>
                     <p className="text-gray-600 dark:text-gray-400 mt-1">
                         Encontre o grupo perfeito para dividir sua assinatura.
+                        {searchQuery && (
+                            <span className="ml-2 text-rose-500 font-medium">
+                                Resultados para "{searchQuery}"
+                            </span>
+                        )}
                     </p>
                 </div>
 
@@ -67,8 +80,8 @@ export default function GroupsPage() {
                             key={categoria}
                             onClick={() => setFilter(categoria)}
                             className={`px-6 py-2 rounded-full font-medium text-sm whitespace-nowrap transition-all ${filter === categoria
-                                    ? "bg-rose-500 text-white shadow-rose-glow"
-                                    : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
+                                ? "bg-rose-500 text-white shadow-rose-glow"
+                                : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
                                 }`}
                         >
                             {categoria}
@@ -100,15 +113,21 @@ export default function GroupsPage() {
                         <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
                             🔍
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                            Nenhum grupo encontrado
-                        </h3>
-                        <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-8">
-                            Não encontramos grupos com os filtros selecionados. Tente novamente mais tarde.
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Nenhum grupo encontrado</h3>
+                        <p className="text-gray-500 dark:text-gray-400">
+                            Tente buscar por outro termo ou categoria.
                         </p>
                     </div>
                 )}
             </main>
         </div>
+    );
+}
+
+export default function GroupsPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex items-center justify-center">Carregando...</div>}>
+            <GroupsContent />
+        </Suspense>
     );
 }

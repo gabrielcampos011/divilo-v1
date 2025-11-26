@@ -20,25 +20,41 @@ export async function createGroup(formData: FormData) {
     const valor_cota = parseFloat((formData.get("valor_cota") as string).replace("R$", "").replace(".", "").replace(",", "."));
 
     const pix_key = formData.get("pix_key") as string;
+    const contato_lider = formData.get("contato_lider") as string;
     const login_acesso = formData.get("login_acesso") as string;
     const senha_acesso = formData.get("senha_acesso") as string;
 
-    // Basic Validation
-    if (!titulo || !servico_id || !vagas_totais || !pix_key || !login_acesso || !senha_acesso) {
-        // In a real app, return error state
+    // New competitive features
+    const tem_caucao = formData.get("tem_caucao") === "true";
+    const valor_caucao = tem_caucao ? parseFloat((formData.get("valor_caucao") as string).replace("R$", "").replace(".", "").replace(",", ".")) : 0;
+    const fidelidade_meses = parseInt(formData.get("fidelidade_meses") as string) || 0;
+
+    // Custom service name (only if servico_id is CUSTOM)
+    const servico_personalizado_nome = servico_id === 'CUSTOM' ? titulo : null;
+
+    // Basic Validation (allow CUSTOM for servico_id)
+    if (!titulo || !vagas_totais || !pix_key || !login_acesso || !senha_acesso) {
         throw new Error("Campos obrigatórios faltando");
     }
+
+    // For custom services, servico_id will be null
+    const finalServicoId = servico_id === 'CUSTOM' ? null : servico_id;
 
     // 3. Insert Group (Parent)
     const { data: grupo, error: grupoError } = await supabase
         .from("grupos")
         .insert({
             lider_id: user.id,
-            servico_id,
+            servico_id: finalServicoId,
             titulo,
             vagas_totais,
-            vagas_ocupadas: 0, // Starts empty (or 1 if leader is member? logic says leader is owner, usually not occupying a slot unless they add themselves)
-            valor_cota
+            vagas_ocupadas: 0,
+            valor_cota,
+            contato_lider,
+            tem_caucao,
+            valor_caucao,
+            fidelidade_meses,
+            servico_personalizado_nome
         })
         .select()
         .single();

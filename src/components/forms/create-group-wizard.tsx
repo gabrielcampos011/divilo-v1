@@ -9,6 +9,7 @@ export function CreateGroupWizard({ servicos }: { servicos: Service[] }) {
     const [step, setStep] = useState(1);
     const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
     const [selectedPlan, setSelectedPlan] = useState<Service | null>(null);
+    const [customServiceData, setCustomServiceData] = useState<{ name: string; price: number } | null>(null);
 
     const handleSelectBrand = (brand: string) => {
         setSelectedBrand(brand);
@@ -17,17 +18,38 @@ export function CreateGroupWizard({ servicos }: { servicos: Service[] }) {
 
     const handleSelectPlan = (plan: Service) => {
         setSelectedPlan(plan);
+        setCustomServiceData(null); // Clear custom data if selecting a regular plan
+        setStep(3);
+    };
+
+    const handleCustomService = (serviceName: string, monthlyPrice: number) => {
+        // Create a mock Service object for custom service
+        const customService: Service = {
+            id: 'CUSTOM',
+            nome: serviceName,
+            grupo_servico: 'CUSTOM',
+            nome_plano: serviceName,
+            nome_completo: serviceName,
+            categoria: 'Personalizado',
+            valor_por_membro_divilo: monthlyPrice / 2, // Assume 2 members by default
+            max_vagas_padrao: 6,
+        };
+
+        setCustomServiceData({ name: serviceName, price: monthlyPrice });
+        setSelectedPlan(customService);
         setStep(3);
     };
 
     const handleBackToBrand = () => {
         setStep(1);
         setSelectedBrand(null);
+        setCustomServiceData(null);
     };
 
     const handleBackToPlan = () => {
         setStep(2);
         setSelectedPlan(null);
+        setCustomServiceData(null);
     };
 
     return (
@@ -63,6 +85,7 @@ export function CreateGroupWizard({ servicos }: { servicos: Service[] }) {
                         services={servicos}
                         selectedBrand={selectedBrand}
                         onSelectPlan={handleSelectPlan}
+                        onCustomService={handleCustomService}
                         onBack={handleBackToBrand}
                     />
                 )}
@@ -70,6 +93,7 @@ export function CreateGroupWizard({ servicos }: { servicos: Service[] }) {
                 {step === 3 && selectedPlan && (
                     <GroupConfigForm
                         selectedPlan={selectedPlan}
+                        customServiceName={customServiceData?.name}
                         onBack={handleBackToPlan}
                     />
                 )}
