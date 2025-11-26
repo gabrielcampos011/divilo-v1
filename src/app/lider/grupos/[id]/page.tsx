@@ -54,15 +54,22 @@ export default async function GroupDetailsPage({
       status,
       data_solicitacao,
       user_id,
-      profiles:user_id (
-        full_name
+      profiles!user_id (
+        full_name,
+        avatar_url
       )
     `)
         .eq("grupo_id", id)
         .order("data_solicitacao", { ascending: false });
 
-    const pendentes = membros?.filter((m) => m.status === "pendente") || [];
-    const aprovados = membros?.filter((m) => ["aprovado", "pago"].includes(m.status)) || [];
+    // Transform profiles from array to single object (Supabase returns array for foreign keys)
+    const membrosTransformed = membros?.map(m => ({
+        ...m,
+        profiles: Array.isArray(m.profiles) ? m.profiles[0] : m.profiles
+    })) || [];
+
+    const pendentes = membrosTransformed.filter((m) => m.status === "pendente");
+    const aprovados = membrosTransformed.filter((m) => ["aprovado", "pago"].includes(m.status));
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-[#050505]">
