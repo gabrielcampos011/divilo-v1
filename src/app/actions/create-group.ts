@@ -40,6 +40,17 @@ export async function createGroup(formData: FormData) {
     // For custom services, servico_id will be null
     const finalServicoId = servico_id === 'CUSTOM' ? null : servico_id;
 
+    console.log("Creating group with data:", {
+        finalServicoId,
+        titulo,
+        vagas_totais,
+        valor_cota,
+        tem_caucao,
+        valor_caucao,
+        fidelidade_meses,
+        servico_personalizado_nome
+    });
+
     // 3. Insert Group (Parent)
     const { data: grupo, error: grupoError } = await supabase
         .from("grupos")
@@ -61,7 +72,8 @@ export async function createGroup(formData: FormData) {
 
     if (grupoError) {
         console.error("Erro ao criar grupo:", grupoError);
-        throw new Error("Erro ao criar grupo");
+        console.error("Erro detalhado:", JSON.stringify(grupoError, null, 2));
+        throw new Error(`Erro ao criar grupo: ${grupoError.message}`);
     }
 
     const grupoId = grupo.id;
