@@ -17,15 +17,12 @@ export default async function PublicGroupDetailsPage({
         data: { user },
     } = await supabase.auth.getUser();
 
-    // Fetch Group Details with leader name
+    // Fetch Group Details
     const { data: grupo, error: grupoError } = await supabase
         .from("grupos")
         .select(`
       *,
-      servicos (nome),
-      profiles:lider_id (
-        full_name
-      )
+      servicos (nome)
     `)
         .eq("id", id)
         .single();
@@ -33,6 +30,7 @@ export default async function PublicGroupDetailsPage({
     // Log error for debugging
     if (grupoError) {
         console.error("Error fetching group:", grupoError);
+        console.error("Error details:", JSON.stringify(grupoError, null, 2));
     }
 
     if (!grupo) {
@@ -46,6 +44,17 @@ export default async function PublicGroupDetailsPage({
                 </div>
             </div>
         );
+    }
+
+    // Fetch leader profile separately
+    let leaderName: string | undefined;
+    if (grupo.lider_id) {
+        const { data: leaderProfile } = await supabase
+            .from("profiles")
+            .select("full_name")
+            .eq("user_id", grupo.lider_id)
+            .single();
+        leaderName = leaderProfile?.full_name;
     }
 
     // Check Member Status
@@ -85,7 +94,7 @@ export default async function PublicGroupDetailsPage({
                             vagasOcupadas={grupo.vagas_ocupadas}
                             vagasTotais={grupo.vagas_totais}
                             descricao={grupo.descricao}
-                            liderNome={grupo.profiles?.full_name}
+                            liderNome={leaderName}
                         />
 
                         <GroupTabs
