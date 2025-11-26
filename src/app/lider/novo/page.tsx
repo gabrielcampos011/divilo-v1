@@ -17,13 +17,13 @@ export default async function NewGroupPage() {
         .order("nome");
 
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen bg-gray-50 dark:bg-[#050505]">
             <Navbar />
 
-            <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col items-center">
                 <div className="text-center mb-10">
-                    <h1 className="text-3xl font-bold text-gray-900">Novo Grupo</h1>
-                    <p className="text-gray-600 mt-2">
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Novo Grupo</h1>
+                    <p className="text-gray-600 dark:text-gray-400 mt-2">
                         Compartilhe sua assinatura e comece a economizar hoje mesmo.
                     </p>
                 </div>

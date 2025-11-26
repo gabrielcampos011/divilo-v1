@@ -16,6 +16,7 @@ export function GroupConfigForm({ selectedPlan, onBack }: GroupConfigFormProps) 
         vagas_totais: "5",
         valor_cota: "",
         pix_key: "",
+        contato_lider: "",
         login_acesso: "",
         senha_acesso: "",
     });
@@ -139,6 +140,20 @@ export function GroupConfigForm({ selectedPlan, onBack }: GroupConfigFormProps) 
                         className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                         required
                     />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Contato do Líder (WhatsApp/Email)</label>
+                    <input
+                        type="text"
+                        name="contato_lider"
+                        value={formData.contato_lider}
+                        onChange={handleChange}
+                        placeholder="(11) 99999-9999 ou email@exemplo.com"
+                        className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-rose-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                        required
+                    />
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Visível apenas para membros com pagamento confirmado</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

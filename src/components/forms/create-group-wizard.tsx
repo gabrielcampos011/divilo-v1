@@ -31,7 +31,7 @@ export function CreateGroupWizard({ servicos }: { servicos: Service[] }) {
     };
 
     return (
-        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-[0_2px_8px_rgba(0,0,0,0.06)] border-none overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden max-w-5xl w-full">
             {/* Progress Bar */}
             <div className="bg-gray-50 dark:bg-gray-800 px-8 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
                 <div className="flex items-center gap-2">

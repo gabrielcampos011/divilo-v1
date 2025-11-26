@@ -25,7 +25,7 @@ export default async function Home() {
       <section className="bg-gradient-to-br from-rose-500 to-rose-600 text-white py-24 px-4 sm:px-6 lg:px-8 rounded-b-[3rem] shadow-rose-glow-lg mb-16">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-sm font-semibold mb-6">
+            <div className="inline-flex items-center gap-2 bg-rose-100 dark:bg-rose-900/20 px-4 py-2 rounded-full text-sm font-semibold mb-6 text-gray-900 dark:text-white border border-rose-200 dark:border-rose-800">
               <span>✨</span>
               <span>Novidade: Economia Compartilhada</span>
             </div>
