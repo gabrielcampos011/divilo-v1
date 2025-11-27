@@ -71,7 +71,7 @@ export default async function PublicGroupDetailsPage({
     }
 
     // Fetch Members (only if user is a member)
-    let membersList = [];
+    let membersList: any[] = [];
     if (memberStatus === "aprovado" || memberStatus === "pago") {
         const { data: members } = await supabase
             .from("membros")
