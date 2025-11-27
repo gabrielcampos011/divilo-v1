@@ -5,6 +5,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { MemberListItem } from "@/components/groups/member-list-item";
 
+export const dynamic = 'force-dynamic';
+
 export default async function GroupDetailsPage({
     params,
 }: {
@@ -20,6 +22,10 @@ export default async function GroupDetailsPage({
     if (!user) {
         redirect("/login");
     }
+
+    console.log("=== DEBUG LEADER PAGE ===");
+    console.log("Group ID:", id);
+    console.log("User ID:", user.id);
 
     // Fetch Group Details
     const { data: grupo } = await supabase
@@ -47,7 +53,7 @@ export default async function GroupDetailsPage({
     }
 
     // Fetch Members with profile names
-    const { data: membros } = await supabase
+    const { data: membros, error: membrosError } = await supabase
         .from("membros")
         .select(`
       id,
@@ -56,17 +62,31 @@ export default async function GroupDetailsPage({
       user_id,
       profiles!user_id (
         full_name,
-        avatar_url
+        avatar_url,
+        email
       )
     `)
         .eq("grupo_id", id)
         .order("data_solicitacao", { ascending: false });
+
+    if (membrosError) {
+        console.error("Error fetching members:", JSON.stringify(membrosError, null, 2));
+    }
 
     // Transform profiles from array to single object (Supabase returns array for foreign keys)
     const membrosTransformed = membros?.map(m => ({
         ...m,
         profiles: Array.isArray(m.profiles) ? m.profiles[0] : m.profiles
     })) || [];
+
+    console.log("Members found (raw):", membros?.length);
+    console.log("Members transformed:", membrosTransformed.length);
+    if (membrosTransformed.length > 0) {
+        console.log("First member status:", membrosTransformed[0].status);
+        console.log("First member user_id:", membrosTransformed[0].user_id);
+    } else {
+        console.log("No members found. Checking RLS or data existence.");
+    }
 
     const pendentes = membrosTransformed.filter((m) => m.status === "pendente");
     const aprovados = membrosTransformed.filter((m) => ["aprovado", "pago"].includes(m.status));
@@ -125,9 +145,14 @@ export default async function GroupDetailsPage({
                             {pendentes.map((membro) => (
                                 <div key={membro.id} className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                     <div>
-                                        <p className="font-bold text-gray-900 dark:text-white">Usuário #{membro.user_id.slice(0, 8)}</p>
+                                        <p className="font-bold text-gray-900 dark:text-white">
+                                            {membro.profiles?.full_name || `Usuário #${membro.user_id.slice(0, 8)}`}
+                                        </p>
                                         <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            Solicitou entrada em {new Date(membro.data_solicitacao).toLocaleDateString()}
+                                            {membro.profiles?.email || "Email não disponível"}
+                                        </p>
+                                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                            Solicitou em {new Date(membro.data_solicitacao).toLocaleDateString()}
                                         </p>
                                     </div>
                                     <form

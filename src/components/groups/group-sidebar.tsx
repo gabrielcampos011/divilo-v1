@@ -1,8 +1,10 @@
 "use client";
 
 import { requestEntry } from "@/app/actions/join-group";
+import { markAsPaid } from "@/app/actions/mark-as-paid";
 import Link from "next/link";
 import { Shield, Lock, CreditCard } from "lucide-react";
+import confetti from "canvas-confetti";
 
 interface GroupSidebarProps {
     groupId: string;
@@ -14,9 +16,10 @@ interface GroupSidebarProps {
     memberStatus: string | null;
     isFull: boolean;
     user: any;
+    pixKey?: string;
 }
 
-export function GroupSidebar({ groupId, valorCota, temCaucao, valorCaucao, fidelidadeMeses, isLeader, memberStatus, isFull, user }: GroupSidebarProps) {
+export function GroupSidebar({ groupId, valorCota, temCaucao, valorCaucao, fidelidadeMeses, isLeader, memberStatus, isFull, user, pixKey }: GroupSidebarProps) {
     return (
         <div className="space-y-6">
             <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
@@ -92,17 +95,78 @@ export function GroupSidebar({ groupId, valorCota, temCaucao, valorCaucao, fidel
                             Gerenciar Grupo
                         </Link>
                     </div>
-                ) : memberStatus === "aprovado" || memberStatus === "pago" ? (
+                ) : memberStatus === "aprovado" ? (
+                    <div className="space-y-4">
+                        <div className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 p-4 rounded-xl text-center text-sm font-medium flex items-center justify-center gap-2">
+                            <Shield className="w-4 h-4" />
+                            Sua entrada foi aprovada!
+                        </div>
+
+                        {/* PIX Payment Info */}
+                        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+                            <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase">Chave PIX do Líder</p>
+                            <div className="flex items-center justify-between bg-white dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                                <code className="text-sm font-mono text-gray-900 dark:text-white truncate max-w-[200px]">
+                                    {pixKey || "Chave não cadastrada"}
+                                </code>
+                                <button
+                                    onClick={() => navigator.clipboard.writeText(pixKey || "")}
+                                    className="text-xs text-rose-500 font-bold hover:underline"
+                                >
+                                    Copiar
+                                </button>
+                            </div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                Realize o pagamento e confirme abaixo para liberar seu acesso.
+                            </p>
+                        </div>
+
+                        <form
+                            action={async () => {
+                                confetti({
+                                    particleCount: 100,
+                                    spread: 70,
+                                    origin: { y: 0.6 }
+                                });
+                                await markAsPaid(groupId);
+                            }}
+                        >
+                            <button
+                                type="submit"
+                                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-green-200 dark:shadow-green-900/20 hover:-translate-y-1"
+                            >
+                                Já realizei o pagamento
+                            </button>
+                        </form>
+                    </div>
+                ) : memberStatus === "pago" ? (
                     <div className="space-y-3">
                         <div className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 p-4 rounded-xl text-center text-sm font-medium flex items-center justify-center gap-2">
                             <Shield className="w-4 h-4" />
-                            Você é membro
+                            Você é membro ativo
                         </div>
-                        {memberStatus === "pago" && (
-                            <div className="text-xs text-center text-gray-500 dark:text-gray-400">
-                                Próximo pagamento: 05/12
+
+                        {/* PIX Info for recurring payments */}
+                        {pixKey && (
+                            <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-xl border border-gray-200 dark:border-gray-700">
+                                <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase">Chave PIX (Pagamentos Mensais)</p>
+                                <div className="flex items-center justify-between bg-white dark:bg-gray-900 p-2 rounded-lg border border-gray-200 dark:border-gray-700">
+                                    <code className="text-xs font-mono text-gray-900 dark:text-white truncate max-w-[180px]">
+                                        {pixKey}
+                                    </code>
+                                    <button
+                                        onClick={() => navigator.clipboard.writeText(pixKey || "")}
+                                        className="text-xs text-rose-500 font-bold hover:underline"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
                             </div>
                         )}
+
+                        <div className="text-xs text-center text-gray-500 dark:text-gray-400">
+                            Próximo pagamento: 05/12
+                        </div>
                     </div>
                 ) : memberStatus === "pendente" ? (
                     <div className="bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300 p-4 rounded-xl text-center text-sm font-medium">
