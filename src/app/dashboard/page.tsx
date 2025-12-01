@@ -4,6 +4,8 @@ import { MembershipCard } from "@/components/ui/membership-card";
 import { GroupCard } from "@/components/ui/group-card";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { StripeConnectButton } from "@/components/stripe/stripe-connect-button";
+import { getStripeAccountStatus } from "@/app/actions/stripe";
 
 export default async function DashboardPage() {
     const supabase = await createClient();
@@ -44,6 +46,10 @@ export default async function DashboardPage() {
         .eq("lider_id", user.id)
         .order("created_at", { ascending: false });
 
+    // Fetch Stripe Account Status
+    const stripeAccount = await getStripeAccountStatus();
+    const isStripeConnected = stripeAccount?.charges_enabled || false;
+
     return (
         <div className="min-h-screen">
             <Navbar />
@@ -51,7 +57,7 @@ export default async function DashboardPage() {
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                 {/* Header */}
                 <div className="mb-12">
-                    <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-50 tracking-tight mb-2">Dashboard</h1>
+                    <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-50 tracking-tight mb-2">Meus Grupos</h1>
                     <p className="text-gray-500 dark:text-gray-400 text-lg">Gerencie suas assinaturas e grupos</p>
                 </div>
 
@@ -106,12 +112,15 @@ export default async function DashboardPage() {
                                 <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-50 tracking-tight">Grupos que Lidero</h2>
                                 <p className="text-gray-500 dark:text-gray-400 mt-1">Gerencie seus grupos e aprovações</p>
                             </div>
-                            <Link
-                                href="/lider/novo"
-                                className="bg-rose-500 hover:bg-rose-600 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-rose-glow hover:shadow-rose-glow-lg hover:-translate-y-0.5 flex items-center gap-2"
-                            >
-                                <span className="text-xl">+</span> Criar Novo Grupo
-                            </Link>
+                            <div className="flex items-center gap-3">
+                                <StripeConnectButton isConnected={isStripeConnected} />
+                                <Link
+                                    href="/lider/novo"
+                                    className="bg-rose-500 hover:bg-rose-600 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-rose-glow hover:shadow-rose-glow-lg hover:-translate-y-0.5 flex items-center gap-2"
+                                >
+                                    <span className="text-xl">+</span> Criar Novo Grupo
+                                </Link>
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -27,7 +27,7 @@ export function UserNav({ user }: UserNavProps) {
                     Meu Perfil
                 </Link>
                 <Link href="/dashboard" className="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-rose-500 dark:hover:text-rose-400 transition-colors">
-                    Dashboard
+                    Meus Grupos
                 </Link>
                 <div className="border-t border-gray-50 dark:border-gray-800 mt-1 pt-1">
                     <form action={logout}>

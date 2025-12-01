@@ -45,7 +45,7 @@ export default async function GroupDetailsPage({
                     <h1 className="text-2xl font-bold text-gray-900">Acesso Negado</h1>
                     <p className="text-gray-600">Você não é o líder deste grupo.</p>
                     <Link href="/lider" className="text-rose-500 hover:underline mt-4 block">
-                        Voltar para Dashboard
+                        Voltar para Meus Grupos
                     </Link>
                 </div>
             </div>

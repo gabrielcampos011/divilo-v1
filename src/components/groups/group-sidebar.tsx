@@ -5,6 +5,7 @@ import { markAsPaid } from "@/app/actions/mark-as-paid";
 import Link from "next/link";
 import { Shield, Lock, CreditCard } from "lucide-react";
 import confetti from "canvas-confetti";
+import { StripePaymentButton } from "@/components/stripe/stripe-payment-button";
 
 interface GroupSidebarProps {
     groupId: string;
@@ -119,6 +120,14 @@ export function GroupSidebar({ groupId, valorCota, temCaucao, valorCaucao, fidel
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                                 Realize o pagamento e confirme abaixo para liberar seu acesso.
                             </p>
+                        </div>
+
+                        <StripePaymentButton groupId={groupId} />
+
+                        <div className="relative flex items-center py-2">
+                            <div className="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
+                            <span className="flex-shrink-0 mx-4 text-gray-400 text-xs uppercase">Ou via PIX</span>
+                            <div className="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
                         </div>
 
                         <form

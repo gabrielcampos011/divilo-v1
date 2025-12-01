@@ -13,6 +13,11 @@ export async function createGroup(formData: FormData) {
         redirect("/login");
     }
 
+    if (!user.email_confirmed_at) {
+        // Optional: Trigger resend email here if needed, or just block
+        throw new Error("Você precisa confirmar seu email antes de criar um grupo.");
+    }
+
     // 2. Extract Data
     const titulo = formData.get("titulo") as string;
     const servico_id = formData.get("servico_id") as string;

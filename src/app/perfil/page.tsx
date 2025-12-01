@@ -3,6 +3,7 @@ import { Navbar } from "@/components/ui/navbar";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { AchievementsSection } from "@/components/ui/achievements-section";
+import { ChangePasswordForm } from "@/components/forms/change-password-form";
 
 export default async function ProfilePage() {
     const supabase = await createClient();
@@ -60,6 +61,9 @@ export default async function ProfilePage() {
 
                         {/* Conquistas */}
                         <AchievementsSection user={user} createdGroupsCount={gruposLiderados?.length || 0} />
+
+                        {/* Alterar Senha */}
+                        <ChangePasswordForm />
 
                         {/* Grupos que Participo */}
                         <section>

@@ -5,6 +5,8 @@ import { GroupHeader } from "@/components/groups/group-header";
 import { GroupTabs } from "@/components/groups/group-tabs";
 import { GroupSidebar } from "@/components/groups/group-sidebar";
 import { ServiceAccessCard } from "@/components/groups/service-access-card";
+import { ReportGroupButton } from "@/components/groups/report-group-button";
+import { LeaveGroupButton } from "@/components/groups/leave-group-button";
 
 export default async function PublicGroupDetailsPage({
     params,
@@ -201,6 +203,14 @@ export default async function PublicGroupDetailsPage({
                                 user={user}
                                 pixKey={pixKey}
                             />
+                            <ReportGroupButton groupId={id} groupTitle={grupo.titulo} />
+                            {(memberStatus === "aprovado" || memberStatus === "pago") && !isLeader && (
+                                <LeaveGroupButton
+                                    groupId={id}
+                                    groupTitle={grupo.titulo}
+                                    hasCaucao={grupo.tem_caucao}
+                                />
+                            )}
                         </div>
                     </div>
                 </div>
