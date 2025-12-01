@@ -4,8 +4,11 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2025-11-17.clover', // Use latest or compatible version
+// Usamos uma chave de fallback em tempo de build para evitar erro caso STRIPE_SECRET_KEY
+// ainda não esteja carregada no ambiente (por exemplo, em builds locais ou CI).
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_build_mock", {
+    apiVersion: '2025-11-17.clover', // Mantenha a versão já utilizada no projeto
+    typescript: true,
 });
 
 export async function createConnectAccount() {

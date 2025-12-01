@@ -1,10 +1,15 @@
+export const dynamic = "force-dynamic";
+
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+// Usamos uma chave de fallback em tempo de build para evitar erro caso STRIPE_SECRET_KEY
+// ainda não esteja carregada no ambiente (por exemplo, em builds locais ou CI).
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_build_mock", {
     apiVersion: '2025-11-17.clover',
+    typescript: true,
 });
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
