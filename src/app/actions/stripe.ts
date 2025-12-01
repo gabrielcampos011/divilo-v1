@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2024-11-20.acacia', // Use latest or compatible version
+    apiVersion: '2025-11-17.clover', // Use latest or compatible version
 });
 
 export async function createConnectAccount() {
