@@ -45,7 +45,7 @@ export async function approveMember(memberId: string, grupoId: string) {
     if (member) {
         await supabase.from("notificacoes").insert({
             user_id: member.user_id,
-            mensagem: `Sua solicitação para o grupo "${grupo.titulo}" foi aprovada! Realize o pagamento.`,
+            mensagem: `Sua entrada no grupo ${grupo.titulo} foi aprovada! Realize o pagamento.`,
             tipo: "aprovacao",
             link: `/grupos/${grupoId}`
         });

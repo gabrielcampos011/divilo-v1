@@ -59,12 +59,6 @@ export function Navbar() {
 
                         {/* Desktop Nav Links */}
                         <div className="hidden md:flex items-center gap-6">
-                            <Link
-                                href="/grupos"
-                                className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors"
-                            >
-                                Explorar
-                            </Link>
                             {user && (
                                 <Link
                                     href="/lider"

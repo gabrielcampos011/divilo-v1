@@ -2,6 +2,7 @@ import { Navbar } from "@/components/ui/navbar";
 import { createClient } from "@/utils/supabase/server";
 import { GroupCard } from "@/components/ui/group-card";
 import Link from "next/link";
+import { Sparkles, TrendingDown, Shield, Gift } from "lucide-react";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -22,11 +23,12 @@ export default async function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-rose-500 to-rose-600 text-white py-24 px-4 sm:px-6 lg:px-8 rounded-b-[3rem] shadow-rose-glow-lg mb-16">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
+      <section className="py-24 px-4 sm:px-6 lg:px-8 mb-16">
+        <div className="max-w-7xl mx-auto bg-gradient-to-br from-rose-500 to-rose-600 text-white rounded-2xl shadow-rose-glow-lg p-12 md:p-16">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 bg-rose-100 dark:bg-rose-900/20 px-4 py-2 rounded-full text-sm font-semibold mb-6 text-gray-900 dark:text-white border border-rose-200 dark:border-rose-800">
-              <span>✨</span>
+              <Sparkles className="w-4 h-4" />
               <span>Novidade: Economia Compartilhada</span>
             </div>
             <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight tracking-tight drop-shadow-sm">
@@ -52,8 +54,8 @@ export default async function Home() {
 
             <div className="mt-16 flex items-center gap-12 text-sm font-medium text-rose-100">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 glass rounded-2xl flex items-center justify-center text-2xl">
-                  📉
+                <div className="w-12 h-12 glass rounded-2xl flex items-center justify-center">
+                  <TrendingDown className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <p className="text-white font-bold text-2xl">75%</p>
@@ -61,8 +63,8 @@ export default async function Home() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 glass rounded-2xl flex items-center justify-center text-2xl">
-                  🛡️
+                <div className="w-12 h-12 glass rounded-2xl flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <p className="text-white font-bold text-2xl">100%</p>
@@ -75,6 +77,7 @@ export default async function Home() {
           {/* Hero Image Placeholder */}
           <div className="hidden md:block relative">
             <div className="w-96 h-96 bg-gradient-to-br from-white/10 to-white/5 rounded-full blur-3xl absolute -top-20 -right-20"></div>
+          </div>
           </div>
         </div>
       </section>
@@ -156,7 +159,7 @@ export default async function Home() {
         <div className="bg-gradient-to-br from-rose-50 to-white dark:from-gray-900 dark:to-gray-800 rounded-3xl p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 shadow-premium-sm border border-gray-100 dark:border-gray-800">
           <div className="max-w-lg">
             <div className="flex items-center gap-2 mb-6 text-rose-600 dark:text-rose-400 font-semibold">
-              <span className="text-2xl">🎁</span>
+              <Gift className="w-5 h-5" />
               <span>Todo mundo ganha</span>
             </div>
             <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-50 mb-6 tracking-tight">
@@ -169,8 +172,8 @@ export default async function Home() {
               Começar Agora
             </button>
           </div>
-          <div className="text-9xl opacity-10 dark:opacity-5 rotate-12 select-none">
-            🎁
+          <div className="text-9xl opacity-10 dark:opacity-5 rotate-12 select-none flex items-center justify-center">
+            <Gift className="w-32 h-32" />
           </div>
         </div>
       </section>

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import { toast } from "sonner";
+import { Bell } from "lucide-react";
 
 type Notification = {
     id: string;
@@ -25,12 +26,17 @@ export function NotificationBell() {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        const { data } = await supabase
+        const { data, error } = await supabase
             .from("notificacoes")
             .select("*")
             .eq("user_id", user.id)
             .order("created_at", { ascending: false })
-            .limit(10);
+            .limit(5);
+
+        if (error) {
+            console.error("Erro ao buscar notificações:", error);
+            return;
+        }
 
         if (data) {
             setNotifications(data);
@@ -113,14 +119,11 @@ export function NotificationBell() {
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative p-2 text-gray-500 hover:text-gray-900 transition-colors rounded-full hover:bg-gray-100"
+                className="relative p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50 transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-                    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-                </svg>
+                <Bell className="w-5 h-5" />
                 {unreadCount > 0 && (
-                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white"></span>
+                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white dark:border-gray-950"></span>
                 )}
             </button>
 

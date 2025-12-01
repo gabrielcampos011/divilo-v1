@@ -4,13 +4,32 @@ import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+async function isNewUser(userId: string, supabase: Awaited<ReturnType<typeof createClient>>) {
+    // Verifica se o usuário tem registros na tabela membros
+    const { data: membros } = await supabase
+        .from("membros")
+        .select("id")
+        .eq("user_id", userId)
+        .limit(1);
+
+    // Verifica se o usuário tem grupos como líder
+    const { data: grupos } = await supabase
+        .from("grupos")
+        .select("id")
+        .eq("lider_id", userId)
+        .limit(1);
+
+    // Se não tem membros E não tem grupos, é um usuário novo
+    return (!membros || membros.length === 0) && (!grupos || grupos.length === 0);
+}
+
 export async function login(formData: FormData) {
     const supabase = await createClient();
 
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error, data } = await supabase.auth.signInWithPassword({
         email,
         password,
     });
@@ -19,8 +38,21 @@ export async function login(formData: FormData) {
         return { error: "Credenciais inválidas. Verifique seu email e senha." };
     }
 
-    revalidatePath("/", "layout");
-    redirect("/grupos");
+    // Verifica se é usuário novo
+    if (data.user) {
+        const supabaseClient = await createClient();
+        const isNew = await isNewUser(data.user.id, supabaseClient);
+        
+        revalidatePath("/", "layout");
+        if (isNew) {
+            redirect("/onboarding");
+        } else {
+            redirect("/grupos");
+        }
+    } else {
+        revalidatePath("/", "layout");
+        redirect("/grupos");
+    }
 }
 
 export async function signup(formData: FormData) {
@@ -29,17 +61,23 @@ export async function signup(formData: FormData) {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    const { error } = await supabase.auth.signUp({
+    const { error, data } = await supabase.auth.signUp({
         email,
         password,
     });
 
     if (error) {
-        return { error: "Erro ao criar conta. Tente novamente." };
+        return { error: error.message || "Erro ao criar conta. Tente novamente." };
     }
 
+    // Usuários novos sempre vão para onboarding
     revalidatePath("/", "layout");
-    redirect("/grupos");
+    if (data.user) {
+        redirect("/onboarding");
+    } else {
+        // Se não há user (email confirmation required), redireciona para login
+        redirect("/login");
+    }
 }
 
 export async function logout() {
